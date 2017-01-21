@@ -1,2 +1,2 @@
-# FSM_using_C++_classes
-Finite State Machine (FSM) example for Energia that models an alarm system
+# FSM Example using Energia
+Finite State Machine (FSM) example for Energia that models an alarm system.  Additional detail can be found on 43oh.com
