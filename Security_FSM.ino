@@ -2,7 +2,7 @@
 #include "Security.h"
 //                                                 Yellow
 //               |---- Energia Pin Numbers ----|   Pause
-//               alarm  clear  green  yellow red   (mSec)
+//               alarm  reset  green  yellow red   (mSec)
 Security zone_1 (2,     3,     4,     5,     6,    4000); 
 Security zone_2 (7,     8,     9,     10,    11,   2000);
 Security zone_3 (12,    13,    14,    15,    19,   3000);
