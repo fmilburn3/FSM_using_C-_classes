@@ -24,7 +24,8 @@ Security::Security(int alarmPin, int resetPin, int greenPin, int yellowPin,
   alarmPin_ =  alarmPin;
   resetPin_ =  resetPin;
 
-  // User defines the yellow -- > red transition timeout, all others are left at 0
+  // User defines the yellow -- > red transition timeout, all others
+  // are left at 0.
   fsmTable[YELLOW].timeout = yellowTimeout;         
 
   // Initialize alarm inputs.
@@ -109,7 +110,8 @@ void Security::getEvents(void)
       timeoutEvent = false;                             
     }
   }
-  // determine what event occurred
+  // Evaluate the events.  Since the input is pulled up,
+  // an input will read zero when the button is pressed.
   event_ = NONE;
   if (resetEvent == 0) {
     event_ = RESET;
