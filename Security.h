@@ -2,15 +2,15 @@
  *
  * Simulates a security system with 3 states:
  *   GREEN: alarm is in the reset state, the green LED is on.
- *   YELLOW: alarm input recently detected, the yellow LED is lit and the
- *           system pauses to allow the operator to manage  false alarm.
- *   RED: alarm not reset after prolonged period, red LED is lit.
+ *   YELLOW: alarm input recently detected, the yellow LED is lit and a
+ *           timer (timeout) starts before transition to RED.
+ *   RED: alarm not reset before timeout, red LED is lit.
  *   
  * Use the Security constructor to initialize the Finite State Machine:
  *   alarm input is simulated with a button switch on alarmPin.
  *   alarm output is reset with a separate button switch on resetPin.
  *   alarm LEDS have their own pins (greenPin, yellowPin, and redPin).
- *   pause before transition to the red state is user specified (mSec).
+ *   Yellow timeout before transition to the red state (mSec).
  *    
  * Call the Update() method frequently to keep the state current. The state
  * (GREEN = 0, YELLOW = 1, RED = 2) is returned by Update().
@@ -34,7 +34,7 @@ class Security
 {
   public:
   Security(int alarmPin, int resetPin, int greenPin, int yellowPin, int redPin,
-           unsigned long yellowPause);
+           unsigned long yellowTimeout);
   int Update();
   
   private:  
@@ -44,16 +44,17 @@ class Security
   int alarmPin_;                  // Energia defined input pins.
   int resetPin_;     
          
-  unsigned long startTime_;       // Start time for pause (mSec).
-  unsigned long pause_;           // length of time a pause is in effect (mSec).
+  unsigned long startTime_;       // Start time for timeout (mSec).
+  unsigned long timeout_;         // length of time for timeout (mSec).
 
-  enum Inputs {                   // All possible input conditions for the FSM.
-    NONE,                         // Alarm and reset are high.
+  enum Events {                   // Possible input conditions for the FSM.
+    TIMEOUT,                      // A timeout has occurred
     ALARM,                        // Alarm is low, reset is high.
     RESET,                        // Reset is low, alarm is high.
-    BOTH                          // Alarm and reset buttons are low.
+    NONE,                         // Alarm and reset buttons are high.
+    BOTH                          // Alarm and reset buttons are low - RESET takes precedence.
   };
-  Inputs input_;                  // Captures current input condition.
+  Events event_;                  // Captures current input condition.
 
   SecurityStates lastState_;      // The state of the FSM when last updated.
   SecurityStates state_;          // The state of the FSM currently.
@@ -61,7 +62,7 @@ class Security
   void doGreen();                 // Perform actions associated with the GREEN state.
   void doYellow();                // Perform actions associated with the YELLOW state.
   void doRed();                   // Perform actions associated with the RED state.
-  void getEvents();               // Read input and evaluate pause status
+  void getEvents();               // Read input and evaluate timeout status
   void getNextState();            // Determine the next state
 };
 #endif
